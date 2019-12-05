@@ -1,0 +1,20 @@
+Spark Shell
+1. PySpark : For Python, Interactive shell to run python, all python cmds plus Spark APIs are here
+2. Spark Shell - For Scala
+
+
+
+########### PySpark ################
+
+SparkContext (sc) is default available in pyspark
+RDD - Resillient Distributed Dataset
+
+####  Loading data via RDD
+
+rdd1 = sc.textFile("/MyHadoop/employeeincrement/part-r-00000")
+collection = rdd1.collect()
+for line in collection:                                                     
+    print(line)
+
+
+

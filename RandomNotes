@@ -7,7 +7,7 @@ Hadoop Distributions
 
 For this training we are using Cloudra.
 
-Defining lambda in Python : lamda
+Defining lambda in Python : lamda s : s.length()
 
 ## HDFS Commands ::
 1. Create a folder : hdfs dfs -mkdir /hadooptraining
@@ -26,23 +26,19 @@ hdfs dfs -get /hadooptraining1/first.txt
 ## GUI for Cloudera Hadoop is HUE
 default username and pass is cloudera/cloudera
 
-## Cloudera distribution of Hadoop comes with mysql installed.
-commands to interact with mysql : mysql -uroot -p
-pass is : cloudera
-show databases;
-use <database name>
-show tables;
+
+
+
+DB Table can be uploaded in 3 formats to hdfs:
+1. Default - CSV
+2. Parquet - Columnar
+3. Avro - Binay
 
 # To updload a table in to HDFS
 By default it will upload in csv format:
 sqoop import --connect jdbc:mysql://localhost:3306/retail_db --username root --password cloudera --table orders --target-dir /MyHadoop
 sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employee -m 1
 
-
-DB Table can be uploaded in 3 formats to hdfs:
-1. Default
-2. Parquet
-3. Avro
 
 # upload table in parquet format
 sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employeeparquet -m 1 --as-parquetfile
@@ -53,6 +49,7 @@ sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username r
 
 # upload table in avro format
 sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employeeavro -m 1 --as-avrodatafile
+
 
 To view in termina there is parquet cmd:
 parquet-tools cat hdfs://localhost/MyHadoop/employeeparquet/ebaf37fa-c08c-4563-9817-e42f21d52ad7.parquet
@@ -68,13 +65,28 @@ avro-tools tojson hdfs://localhost/MyHadoop/employeeavro/part-m-00000.avro
 
 
 
-## Creating a new database in mysql
-create database hadooptrainingdb
-# Creat a table
-create table employee(emp_id integer, emp_name varchar(20), primary_key(emp_id))
 
+##### Incremental data upload to HDFS from DB
 
-## 2 types of formats to save dta
-1. Parquet format - columnar 
-2. Avro Format - binary
+Two Modes : 
+1. Merge Mode : updates the existing file
+2. Append Mode : New file will be ceated every time upload happens
+
+# uploading via Incremental Load
+1. Merge Mode
+sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employeeincrement -m 1 --incremental lastmodified --check-column last_modified --last-value '2019-12-05 01:21:17' -merge-key emp_id
+
+2. Append
+# uploading via Incremental Load
+sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employeeappend -m 1 --incremental lastmodified --check-column last_modified --last-value '2019-12-05 01:21:17' --append
+
+#### Sqoop Job #####  
+- No need to send last update timestamp
+- sqoob job know when the last job has run.
+sqoop job --create emp-incremental-job-1 -- import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employeeappendjob -m 1 --incremental lastmodified --check-column last_modified
+
+# sqoop job --list
+
+# Running a sqoop job
+sqoop job --exec <job name>
 

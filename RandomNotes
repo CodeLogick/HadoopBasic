@@ -7,11 +7,74 @@ Hadoop Distributions
 
 For this training we are using Cloudra.
 
-Defining lambda in Python
+Defining lambda in Python : lamda
 
-HDFS :
-Create a folder : hdfs dfs -mkdir /hadooptraining
-Put (to upload a file to hdfs system) cmd : hdfs dfs -put first.txt /hadooptraining
-To see the content of file : hdfs dfs -cat /hadooptraining/first.txt
-Copying file from one folder to another : hdfs dfs -cp /hadooptraining/first.txt /hadooptraining1
+## HDFS Commands ::
+1. Create a folder : hdfs dfs -mkdir /hadooptraining
+2. Put (to upload a file to hdfs system) cmd : hdfs dfs -put first.txt /hadooptraining
+3. To see the content of file : hdfs dfs -cat /hadooptraining/first.txt
+4. Copying file from one folder to another : hdfs dfs -cp /hadooptraining/first.txt /hadooptraining1
+5. To see file content : hdfs dfs -cat /MyHadoop/orders/part-m-00000
+
+
+## To list java processes alone :: sudo jps
+secondary name node does housekeeping job for main name node.
+
+## Downloading a file from hdfs to local client : 
+hdfs dfs -get /hadooptraining1/first.txt
+
+## GUI for Cloudera Hadoop is HUE
+default username and pass is cloudera/cloudera
+
+## Cloudera distribution of Hadoop comes with mysql installed.
+commands to interact with mysql : mysql -uroot -p
+pass is : cloudera
+show databases;
+use <database name>
+show tables;
+
+# To updload a table in to HDFS
+By default it will upload in csv format:
+sqoop import --connect jdbc:mysql://localhost:3306/retail_db --username root --password cloudera --table orders --target-dir /MyHadoop
+sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employee -m 1
+
+
+DB Table can be uploaded in 3 formats to hdfs:
+1. Default
+2. Parquet
+3. Avro
+
+# upload table in parquet format
+sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employeeparquet -m 1 --as-parquetfile
+-m is used for limiting the threads.
+
+# upload table in parquet format (by selecting few columns)
+sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employeeparquetselect -m 1 --as-parquetfile --columns emp_id where emp_id = 101
+
+# upload table in avro format
+sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employeeavro -m 1 --as-avrodatafile
+
+To view in termina there is parquet cmd:
+parquet-tools cat hdfs://localhost/MyHadoop/employeeparquet/ebaf37fa-c08c-4563-9817-e42f21d52ad7.parquet
+
+To view as in DB
+parquet-tools schema hdfs://localhost/MyHadoop/employeeparquet/ebaf37fa-c08c-4563-9817-e42f21d52ad7.parquet
+
+To view in json
+parquet-tools cat --json hdfs://localhost/MyHadoop/employeeparquet/ebaf37fa-c08c-4563-9817-e42f21d52ad7.parquet
+
+To view avro in json
+avro-tools tojson hdfs://localhost/MyHadoop/employeeavro/part-m-00000.avro
+
+
+
+## Creating a new database in mysql
+create database hadooptrainingdb
+# Creat a table
+create table employee(emp_id integer, emp_name varchar(20), primary_key(emp_id))
+
+
+## 2 types of formats to save dta
+1. Parquet format - columnar 
+2. Avro Format - binary
 

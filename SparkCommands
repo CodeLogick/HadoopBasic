@@ -2,8 +2,6 @@ Spark Shell
 1. PySpark : For Python, Interactive shell to run python, all python cmds plus Spark APIs are here
 2. Spark Shell - For Scala
 
-
-
 ########### PySpark ################
 
 SparkContext (sc) is default available in pyspark
@@ -16,5 +14,44 @@ collection = rdd1.collect()
 for line in collection:                                                     
     print(line)
 
+Two types of operation can be performed on RDD
+1. Transformation - Intermediate operations, Ex. Filter, peek, Map- Lazy function.
+		    It creates RDD only when action is called.
+2. Actions - Terminal operations, Ex. Count, 
 
+
+Types of RDD:
+1.Single Element RDD
+2.Pair RDD- Each and every element of RDD is a pair -- Tuple (Hi, 4)
+
+Lambda and Rdd Commands
+
+##Map function
+	rddUpperCase=rddUpper.map(lamba s : s.upper())
+##Filter fuction
+	rddFilteredWithI= rddUpperCase.filter(lambda s : s.startswith("I"))
+##Saving the output in text file
+	rddFilteredWithI.saveAsTextFile("/MyHadoop/Spark/")
+## To get the output as collection
+	rddFilteredWithI.collect()
+## Converting Single RDD to pair
+	rddTuple=sc.textFile("/MyHadoop/Spark/Users/users.txt").map(lambda s : s.split("\t").map(lambda line : (line[0],line[1])
+
+## For Loop in Python
+for filtered in rddFilteredWithI.collect() :
+...     print(filtered)
+... 
+
+## Printing Tuple
+>>> for pair in rddTuple.collect():
+...     print(pair[0])
+
+
+
+
+####(2,(3,4))
+rddDoubleTuple = sc.textFile("/MyHadoop/Spark/Users/users1.txt").map(lambda s : s.split("\t")).map(lambda line : (line[0],(line[1],line[2])))
+>>> rddCollect = rddDoubleTuple.collect()
+>>> for line in rddCollect:
+...     print(line)
 

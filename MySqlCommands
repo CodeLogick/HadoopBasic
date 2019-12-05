@@ -11,6 +11,10 @@ create database hadooptrainingdb
 # Creat a table
 create table employee(emp_id integer, emp_name varchar(20), primary_key(emp_id))
 
+
+insert into employee (emp_id, emp_name) values (113, Ajay);
+
+
 ##Alter table : 
 alter talbe employee add column last_modified timestamp default current_timestamp on update current_timestamp;
 

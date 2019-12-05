@@ -6,3 +6,12 @@ Hadoop Distributions
 2. Hortonworks
 
 For this training we are using Cloudra.
+
+Defining lambda in Python
+
+HDFS :
+Create a folder : hdfs dfs -mkdir /hadooptraining
+Put (to upload a file to hdfs system) cmd : hdfs dfs -put first.txt /hadooptraining
+To see the content of file : hdfs dfs -cat /hadooptraining/first.txt
+Copying file from one folder to another : hdfs dfs -cp /hadooptraining/first.txt /hadooptraining1
+

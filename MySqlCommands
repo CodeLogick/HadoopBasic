@@ -1,0 +1,18 @@
+## Cloudera distribution of Hadoop comes with mysql installed.
+commands to interact with mysql : mysql -uroot -p
+pass is : cloudera
+show databases;
+use <database name>
+show tables;
+
+
+## Creating a new database in mysql
+create database hadooptrainingdb
+# Creat a table
+create table employee(emp_id integer, emp_name varchar(20), primary_key(emp_id))
+
+##Alter table : 
+alter talbe employee add column last_modified timestamp default current_timestamp on update current_timestamp;
+
+select * from employee
+update table employee set emp_id = emp_id + 10;

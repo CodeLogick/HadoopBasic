@@ -1,1 +1,8 @@
 Default replication factor for Hadoo is 3
+
+
+Hadoop Distributions 
+1. Cloudra
+2. Hortonworks
+
+For this training we are using Cloudra.

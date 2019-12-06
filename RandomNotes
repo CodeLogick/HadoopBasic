@@ -38,7 +38,7 @@ DB Table can be uploaded in 3 formats to hdfs:
 By default it will upload in csv format:
 sqoop import --connect jdbc:mysql://localhost:3306/retail_db --username root --password cloudera --table orders --target-dir /MyHadoop
 sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employee -m 1
-
+sqoop import --connect jdbc:mysql://localhost:3306/retail_db --username root --password cloudera --table customers --target-dir /MyHadoop/Spark/Customers
 
 # upload table in parquet format
 sqoop import --connect jdbc:mysql://localhost:3306/hadooptrainingdb --username root --password cloudera --table employee --target-dir /MyHadoop/employeeparquet -m 1 --as-parquetfile
@@ -89,4 +89,12 @@ sqoop job --create emp-incremental-job-1 -- import --connect jdbc:mysql://localh
 
 # Running a sqoop job
 sqoop job --exec <job name>
+
+export JAVA_HOME=/opt/idea-IC-172.3757.52/jre64/
+
+
+
+########## Net cat cmd
+
+nc -nlk 8090
 

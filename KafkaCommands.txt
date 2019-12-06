@@ -1,0 +1,12 @@
+## Create kafka topic cmd :
+./kafka-topics.sh --create --topic training-topic --replication-factor 1 --partitions 3 --zookeeper localhost:2181
+
+
+## Consumer
+
+## Producer
+./kafka-console-consumer.sh --topic training-topic --bootstrap-server localhost:9092
+
+./kafka-console-producer.sh --topic training-topic --broker-list localhost:9092
+
+

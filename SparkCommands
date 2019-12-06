@@ -55,3 +55,77 @@ rddDoubleTuple = sc.textFile("/MyHadoop/Spark/Users/users1.txt").map(lambda s : 
 >>> for line in rddCollect:
 ...     print(line)
 
+
+##### Flat Map ######
+
+for w in count.reduceByKey(lambda acc,value : acc + value).sortBy(lambda tup : tup[1], False).collect():
+...     print(w)
+
+The second param in sortBy (false) indicates ascending or desending, false means desc)
+
+
+######### Spark Dataframe and SQL ###########
+
+Dataframe contains name coulumns
+ -collection with schema
+ -can query with sql
+
+while RDD is just a collection of objects 
+
+rdd1 = sc.textFile("").map(lambda line : line.split(","))
+rdd2 = rdd1.map(lambda arr : [arr[0],arr[1],arr[2],arr[3]])
+df = rdd2.toDF("CustomerId","FirstName","LastName","Email") -- this take some time coz data is huge
+
+# now with this df we can query like sql
+df.registerTempTable("Customer")
+df1 = sqlContext.sql("select * from customer")
+df1.show(5)
+
+# DataFrame we can save also as json
+df1.write.format("json").save("path in hadoop")
+
+
+
+
+## Creating a Dataframe from json format data in HDFS
+
+{"id":"1","name":"Sanjay","designation":"Manager"}
+{"id":"2","name":"Ajay","designation":"Manager1"}
+{"id":"1","name":"Raj","designation":"Manager2"}
+{"id":"1","name":"Vihjay","designation":"Manager3"}
+
+empDf = sqlContext.read.format("json").load("/MyHadoop/Spark/JsonData.txt").select("id","name","designation")
+empDf.registerTempTable("employee")
+sqlContext.sql("select * from employee where designation = 'Manager'").show()
+
+
+## Parquet format to DataFrame
+df = sqlContext.read.format("parquet").load("/MyHadoop/employeeparquet/ebaf37fa-c08c-4563-9817-e42f21d52ad7.parquet").show()
+df.registerTempTable("emp")
+sqlContext.sql("select * from emp").show()
+
+#### Joins with DataFrames ####
+
+customerDf = sc.textFile("/MyHadoop/Spark/Customers").map(lambda line : line.split(",")).map(lambda arr : [arr[0],arr[1],arr[2]]).toDF(["CustomerId","FirstName","LastName"])
+
+orderDf = sc.textFile("/MyHadoop/Spark/Orders").map(lambda line : line.split(",")).map(lambda arr : [arr[0],arr[1],arr[2],arr[3]]).toDF(["OrderId","OrderDate","CustomerId","Status"])
+
+customerDf.registerTempTable("Customer")
+orderDf.registerTempTable("Order")
+
+joinDf = sqlContext.sql("select a.*, b.* from Customer a, Order b where a.CustomerId = b.CustomerId")
+
+countDf = sqlContext.sql("select a.CustomerId, count(*) from Customer a, Order b where a.CustomerId = b.CustomerId group by a.CustomerId")
+
+
+
+
+
+##################### Spark Streaming #################################
+
+Spark Streaming Divides the data stream into Batches of nl seconds
+
+
+
+## submitting python code
+spark-submit kafkastreamtest.py
